@@ -1,0 +1,19 @@
+{
+  "name": "movie-bot",
+  "version": "1.0.0",
+  "description": "Discord client for MovieTogether project",
+  "main": "./src/bot.js",
+  "scripts": {
+    "start": "node src/bot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/c-salt/movie-bot.git"
+  },
+  "author": "Justen Caldwell, Elijah Sattler",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/c-salt/movie-bot/issues"
+  },
+  "homepage": "https://github.com/c-salt/movie-bot#readme"
+}
