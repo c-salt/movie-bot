@@ -27,8 +27,11 @@ bot.on('message', (message) => {
       case 'connect':
         commands.connect.connectAccount(message, args);
         break;
+      case 'disconnect':
+        commands.disconnect.disconnectAccount(message, args);
+        break;
       default:
-        message.channel.send('idiot.'); 
+        message.channel.send('oops.');
     }
   }
 });

@@ -1,3 +1,5 @@
+const rp = require('request-promise');
+
 const methods = {};
 
 /**
@@ -8,14 +10,11 @@ const methods = {};
 methods.connectAccount = (message, args) => {
   // First handle improper command usage
   if (message.guild !== null && args.length === 0){
-    message.channel.send('To begin connecting your account, please PM me your UserID!\n`!message {userid}`').then(returnMsg => {
-      console.log('In message delete function.');
-      message.delete(5000);
-      returnMsg.delete(5000);
-    });
+    message.author.send('To begin connecting your account, please pm me your UserID!\n`!message {userid}`');
+    message.delete();
     return;
   } else if (message.guild !== null){
-    message.author.send('Hey! PM that code to me, keep it safe!');
+    message.author.send('Hey, pm that code to me! Keep it safe!');
     message.delete();
     return;
   } else if (args.length > 1 || !RegExp(/\d{6}/).test(args[0])) {
@@ -26,7 +25,31 @@ methods.connectAccount = (message, args) => {
 
   // Start real functionality
   console.log(`Connect account: ${message.author.id} to MovieTogether`);
+  
+  const options = {
+    method: 'PATCH',
+    uri: 'http://localhost:4000/user',
+    headers: {
+      'x-access-token': process.env.discord_token
+    },
+    json: true,
+    body: {
+      userid: args[0],
+      data: {
+        discord_id: message.author.id,
+        discord_verified: "1",
+      },
+    },
+  };
 
+  rp(options).then(res => {
+    console.log(res);
+    if (res.success) {
+      message.author.send('Successfully connected to MovieTogether! For commands type...\n`!commands`');
+    } else {
+      message.author.send('Error connecting your account. Report this to Elijah or Justen');
+    }
+  });
 }
 
 module.exports = methods;
