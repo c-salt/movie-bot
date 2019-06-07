@@ -1,0 +1,63 @@
+COMMANDS:
+      a: 'add'
+      f: 'future'
+      i: 'imdbID'
+      n: 'name'
+      o: 'info'
+      r: 'remove'
+      w: 'watched'
+      y: 'year'
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+!movie command test cases
+--------------------------------------------------------------------------------------------------------------------------------------------------
+// Must have one and only one of add, remove, info, or watched in command
+1. Valid Commands
+!movie -a -i tt2911666
+!movie -a -n John Wick -y 2014 -f
+!movie -a -i tt2911666 -f
+!movie -r -n John Wick -y 2014
+!movie -r -i tt2911666
+!movie -o -n John Wick -y 2014
+!movie -o -i tt2911666
+!movie -w -n John Wick -y 2014
+!movie -w -i tt2911666
+
+2. Invalid Commands
+!movie -a -n John Wick -y 2014 -r
+!movie -a -i tt2911666 -r
+!movie -a -n John Wick -y 2014 -o
+!movie -a -i tt2911666 -o
+!movie -a -n John Wick -y 2014 -w
+!movie -a -i tt2911666 -w
+!movie -r -n John Wick -y 2014 -o
+!movie -r -i tt2911666 -o
+!movie -r -n John Wick -y 2014 -w
+!movie -r -i tt2911666 -w
+!movie -o -n John Wick -y 2014 -w
+!movie -o -i tt2911666 -w
+
+// Future can only be used with add, not other main command flags
+1. Valid Commands
+!movie -a -n John Wick -y 2014 -f
+!movie -a -i tt2911666 -f
+
+2. Invalid Commands
+!movie -o -n John Wick -y 2014 -f
+!movie -o -i tt2911666 -f
+!movie -r -n John Wick -y 2014 -f
+!movie -r -i tt2911666 -f
+!movie -w -n John Wick -y 2014 -f
+!movie -w -i tt2911666 -f
+
+// Name and Year must be together
+1. Valid Commands
+!movie -a -n -y
+!movie -a -n -y
+!movie -r -n -y
+!movie -r -n -y
+!movie -o -n -y
+!movie -o -n -y
+
+2. Invalid Commands
+NOTE. MORE THAN ONE -i, -n, -y, -a, etc. flags. (IE flags not unique)

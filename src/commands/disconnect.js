@@ -1,4 +1,4 @@
-const rp = require('request-promise');
+const movieTogetherAPI = require('../helpers/movieTogetherAPI');
 
 const methods = {};
 
@@ -14,24 +14,13 @@ methods.disconnectAccount = (message, args) => {
     return;
   }
   console.log(`Disconnect account: ${message.author.id} from MovieTogether`);
-  
-  const options = {
-    method: 'PATCH',
-    uri: 'http://localhost:4000/user',
-    headers: {
-      'x-access-token': process.env.discord_token
-    },
-    json: true,
-    body: {
-      discord_id: message.author.id,
-      data: {
-        discord_id: null,
-        discord_verified: "0",
-      },
-    },
+
+  const data = {
+    discord_id: null,
+    discord_verified: '0',
   };
 
-  rp(options).then(res => {
+  movieTogetherAPI.callUpdateUser(message.author.id, data).then((res) => {
     console.log(res);
     if (res.success) {
       message.author.send('Successfully disconnected from MovieTogether! Come back soon! :wave:');
@@ -39,6 +28,6 @@ methods.disconnectAccount = (message, args) => {
       message.author.send('Error disconnecting your account. Report this to Elijah or Justen');
     }
   });
-}
+};
 
 module.exports = methods;

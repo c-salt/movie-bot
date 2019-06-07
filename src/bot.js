@@ -9,13 +9,12 @@ const bot = new Discord.Client();
 bot.login(discordAuth.token);
 
 // Called upon bot launch
-bot.on('ready', (e) => {
+bot.on('ready', () => {
   console.log('MovieTogether bot launched and ready...');
 });
 
 // Called whenever a message is sent in a text channel
 bot.on('message', (message) => {
-
   // if ! entered before a word, begin executing a command
   if (message.content.substring(0, 1) === '!') {
     // Split the message into an array of single words, then split the command and arguments up.
@@ -29,6 +28,9 @@ bot.on('message', (message) => {
         break;
       case 'disconnect':
         commands.disconnect.disconnectAccount(message, args);
+        break;
+      case 'movie':
+        commands.movie.executeMovieCommand(message, args);
         break;
       default:
         message.channel.send('oops.');
