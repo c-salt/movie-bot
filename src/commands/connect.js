@@ -25,19 +25,19 @@ methods.connectAccount = (message, args) => {
 
   // Start real functionality
   console.log(`Connect account: ${message.author.id} to MovieTogether`);
-
-  const data = {
-    discord_id: message.author.id,
-    discord_verified: '1',
+  const body = {
+    userid: args[0],
+    data: {
+      discord_id: message.author.id,
+      discord_verified: '1',
+    },
   };
 
-  movieTogetherAPI.callUpdateUser(message.author.id, data).then((res) => {
-    console.log(res);
-    if (res.success) {
-      message.author.send('Successfully connected to MovieTogether! For commands type...\n`!commands`');
-    } else {
-      message.author.send('Error connecting your account. Report this to Elijah or Justen');
-    }
+  movieTogetherAPI.callUpdateUser(body).then(() => {
+    message.author.send('Successfully connected to MovieTogether! For commands type...\n`!commands`');
+  }).catch((error) => {
+    console.log(error);
+    message.author.send('Error connecting your account. Report this to Elijah or Justen');
   });
 };
 

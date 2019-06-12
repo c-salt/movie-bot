@@ -1,5 +1,6 @@
 const parser = require('minimist');
 const movieTogetherAPI = require('../helpers/movieTogetherAPI');
+const utils = require('../helpers/utils');
 
 const methods = {};
 
@@ -24,11 +25,67 @@ function commandsValid(args) {
 }
 
 /**
+ * Calls API to add a movie to super/future list
+ * @param {Object} args
+ * @param {Object} message
+ */
+function addMovie(args, message) {
+  console.log('Entering addMovie function');
+  const body = {
+    discord_id: message.author.id,
+    data: {
+      future: args.future,
+      imdbID: args.imdbID,
+      name: args.name,
+      year: args.year,
+    },
+  };
+  movieTogetherAPI.callAddMovie(body).then((res) => {
+    console.log(res);
+  }).catch((error) => {
+    console.log(error);
+  });
+}
+
+/**
+ * Calls API to retrieve information about a movie
+ * @param {Object} args
+ * @param {Object} message
+ */
+function getMovieInfo(args, message) {
+  console.log('Entering getMovieInfo function');
+}
+
+/**
+ * Calls API to removie a movie from super/future list
+ * @param {Object} args
+ * @param {Object} message
+ */
+function removeMovie(args, message) {
+  console.log('Entering removeMovie function');
+}
+
+/**
+ * Calls API to change a movie from future to super list
+ * @param {Object} args
+ * @param {Object} message
+ */
+function watchedMovie(args, message) {
+  console.log('Entering watchedMovie function');
+}
+
+
+/**
  * Main entry point for !movie command processing
  * @param {Object} message Incoming Discord message object
  * @param {Object} args
  */
-methods.executeMovieCommand = (message, args) => {
+methods.executeMovieCommand = async (message, args) => {
+  // Check that the user has connected their account before proceeding
+  if (await utils.verifyConnected(message) === false) {
+    return;
+  }
+
   const parsedArgs = parser(args, {
     alias: {
       a: 'add',
@@ -44,13 +101,26 @@ methods.executeMovieCommand = (message, args) => {
 
   console.log(`executeMovieCommand: Parsed Arguments = ${JSON.stringify(parsedArgs)}`);
 
+  // Check to see if the user-entered command is valid. If it gets past this point
+  // then it is suitable for processing.
   try {
     commandsValid(parsedArgs);
   } catch (error) {
     message.channel.send(`**Invalid Command:**\n\t${error.message}\n\nFor help:\t\t\t  \`!help movie\`\nFor examples:\t\`!examples movie\``);
     return;
   }
-  message.channel.send('It was a valid command');
+
+  if (parsedArgs.add) {
+    addMovie(parsedArgs, message);
+  } else if (parsedArgs.info) {
+    getMovieInfo(parsedArgs, message);
+  } else if (parsedArgs.remove) {
+    removeMovie(parsedArgs, message);
+  } else if (parsedArgs.watched) {
+    watchedMovie(parsedArgs, message);
+  } else {
+    console.log('Made it to end of main command checking with no command found... uh oh.');
+  }
 };
 
 module.exports = methods;

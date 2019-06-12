@@ -15,18 +15,19 @@ methods.disconnectAccount = (message, args) => {
   }
   console.log(`Disconnect account: ${message.author.id} from MovieTogether`);
 
-  const data = {
-    discord_id: null,
-    discord_verified: '0',
+  const body = {
+    discord_id: message.author.id,
+    data: {
+      discord_id: '',
+      discord_verified: '0',
+    },
   };
 
-  movieTogetherAPI.callUpdateUser(message.author.id, data).then((res) => {
-    console.log(res);
-    if (res.success) {
-      message.author.send('Successfully disconnected from MovieTogether! Come back soon! :wave:');
-    } else {
-      message.author.send('Error disconnecting your account. Report this to Elijah or Justen');
-    }
+  movieTogetherAPI.callUpdateUser(body).then(() => {
+    message.author.send('Successfully disconnected from MovieTogether! Come back soon! :wave:');
+  }).catch((error) => {
+    console.log(error);
+    message.author.send('Error disconnecting your account. Report this to Elijah or Justen');
   });
 };
 

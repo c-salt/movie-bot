@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const rp = require('request-promise');
 
 const methods = {};
@@ -25,17 +26,23 @@ function callAPI(method, endpoint, body) {
 
 /**
  * Calls the PATCH /user endpoint
- * @param {String} userid
- * @param {Object} data
+ * @param {Object} body
  * @returns {Promise}
  */
-methods.callUpdateUser = (userid, data) => {
-  const body = {
-    userid,
-    data,
-  };
+methods.callUpdateUser = (body => callAPI('PATCH', '/user', body));
 
-  return callAPI('PATCH', '/user', body);
-};
+/**
+ * Calls the POST /movie endpoint
+ * @param {Object} body
+ * @returns {Promise}
+ */
+methods.callAddMovie = (body => callAPI('POST', '/movie', body));
+
+/**
+ * Calls the GET /user/connected endpoint
+ * @param {Object} body
+ * @returns {Promise}
+ */
+methods.callVerifyConnected = (body => callAPI('GET', '/user/connected', body));
 
 module.exports = methods;
