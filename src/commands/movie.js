@@ -44,6 +44,7 @@ function addMovie(args, message) {
     console.log(res);
   }).catch((error) => {
     console.log(error);
+    message.channel.send(`Failed to add movie: \`${error.error.errorMessage}\``);
   });
 }
 

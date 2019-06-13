@@ -18,7 +18,7 @@ methods.disconnectAccount = (message, args) => {
   const body = {
     discord_id: message.author.id,
     data: {
-      discord_id: '',
+      discord_id: null,
       discord_verified: '0',
     },
   };
