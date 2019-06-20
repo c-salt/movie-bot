@@ -1,4 +1,5 @@
 const parser = require('minimist');
+const Discord = require('discord.js');
 const movieTogetherAPI = require('../helpers/movieTogetherAPI');
 const utils = require('../helpers/utils');
 
@@ -22,6 +23,10 @@ function commandsValid(args) {
   if ((args.name && !args.year) || (!args.name && args.year)) {
     throw new Error('`-n/--name` and `-y/--year` must be used together');
   }
+  // Cannot have the same flag more than one time
+  if (Object.keys(args).filter(arg => args[arg] instanceof Object).length !== 0) {
+    throw new Error('Cannot specify the same flag multiple times');
+  }
 }
 
 /**
@@ -40,8 +45,16 @@ function addMovie(args, message) {
       year: args.year,
     },
   };
-  movieTogetherAPI.callAddMovie(body).then((res) => {
-    console.log(res);
+  movieTogetherAPI.callAddMovie(body).then((movieInfo) => {
+    const movieEmbed = new Discord.RichEmbed()
+      .setColor('#ff665e')
+      .setTitle(movieInfo.title)
+      .setDescription(movieInfo.released)
+      .setAuthor('MovieTogetherBot', 'https://avatars3.githubusercontent.com/u/50064876?s=200&v=4', 'https://github.com/c-salt/movie-bot')
+      .setThumbnail(movieInfo.poster)
+      .addField('Plot', movieInfo.plot)
+      .setFooter(`Movie added by: @${message.author.username}`);
+    message.channel.send(movieEmbed);
   }).catch((error) => {
     console.log(error);
     message.channel.send(`Failed to add movie: \`${error.error.errorMessage}\``);
@@ -87,7 +100,10 @@ methods.executeMovieCommand = async (message, args) => {
     return;
   }
 
-  const parsedArgs = parser(args, {
+  const convertedArgs = utils.convertFlagArgumentString(args);
+  console.log(convertedArgs);
+
+  const parsedArgs = parser(convertedArgs.split(' '), {
     alias: {
       a: 'add',
       f: 'future',
@@ -99,7 +115,7 @@ methods.executeMovieCommand = async (message, args) => {
       y: 'year',
     },
   });
-
+  delete parsedArgs._;
   console.log(`executeMovieCommand: Parsed Arguments = ${JSON.stringify(parsedArgs)}`);
 
   // Check to see if the user-entered command is valid. If it gets past this point
@@ -110,6 +126,8 @@ methods.executeMovieCommand = async (message, args) => {
     message.channel.send(`**Invalid Command:**\n\t${error.message}\n\nFor help:\t\t\t  \`!help movie\`\nFor examples:\t\`!examples movie\``);
     return;
   }
+
+  parsedArgs.name = parsedArgs.name.replace(new RegExp('~', 'g'), ' ');
 
   if (parsedArgs.add) {
     addMovie(parsedArgs, message);

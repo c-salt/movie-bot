@@ -20,4 +20,33 @@ methods.verifyConnected = async (message) => {
   });
 };
 
+/**
+ * Converts movie name string from space to _ separated.
+ * @param {String} commandIn
+ * @returns {String}
+ */
+methods.convertFlagArgumentString = (commandIn) => {
+  console.log(`Converting incoming command = ${commandIn}`);
+
+  let flag = '';
+  if (commandIn.includes('--name')) {
+    flag = '--name';
+  } else if (commandIn.includes('-n')) {
+    flag = '-n';
+  } else if (commandIn.includes('--name=')) {
+    flag = '--name=';
+  } else {
+    return commandIn;
+  }
+  const flagIndex = commandIn.indexOf(flag);
+  let nextDash = commandIn.indexOf('-', flag.length + flagIndex);
+  if (nextDash === -1) {
+    nextDash = commandIn.length;
+  }
+  console.log('flagIndex ', flagIndex, 'nextDash ', nextDash);
+  const name = commandIn.substring(flag.length + flagIndex + 1, nextDash - 1);
+  console.log('name ', name);
+  return commandIn.replace(name, name.replace(new RegExp(' ', 'g'), '~'));
+};
+
 module.exports = methods;

@@ -30,7 +30,7 @@ bot.on('message', (message) => {
         commands.disconnect.disconnectAccount(message, args);
         break;
       case 'movie':
-        commands.movie.executeMovieCommand(message, args);
+        commands.movie.executeMovieCommand(message, args.join(' '));
         break;
       default:
         message.channel.send('oops.');
