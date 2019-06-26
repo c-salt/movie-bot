@@ -1,5 +1,4 @@
 const parser = require('minimist');
-const Discord = require('discord.js');
 const movieTogetherAPI = require('../helpers/movieTogetherAPI');
 const utils = require('../helpers/utils');
 
@@ -35,28 +34,20 @@ function commandsValid(args) {
  * @param {Object} message
  */
 function addMovie(args, message) {
-  console.log('Entering addMovie function');
   const body = {
     discord_id: message.author.id,
     data: {
       future: args.future,
-      imdbID: args.imdbID,
+      imdbid: args.imdbID,
       name: args.name,
       year: args.year,
     },
   };
   movieTogetherAPI.callAddMovie(body).then((movieInfo) => {
-    const movieEmbed = new Discord.RichEmbed()
-      .setColor('#ff665e')
-      .setTitle(movieInfo.title)
-      .setDescription(movieInfo.released)
-      .setAuthor('MovieTogetherBot', 'https://avatars3.githubusercontent.com/u/50064876?s=200&v=4', 'https://github.com/c-salt/movie-bot')
-      .setThumbnail(movieInfo.poster)
-      .addField('Plot', movieInfo.plot)
-      .setFooter(`Movie added by: @${message.author.username}`);
+    console.log(movieInfo);
+    const movieEmbed = utils.generateMovieEmbed(movieInfo);
     message.channel.send(movieEmbed);
   }).catch((error) => {
-    console.log(error);
     message.channel.send(`Failed to add movie: \`${error.error.errorMessage}\``);
   });
 }
@@ -68,6 +59,22 @@ function addMovie(args, message) {
  */
 function getMovieInfo(args, message) {
   console.log('Entering getMovieInfo function');
+  const body = {
+    discord_id: message.author.id,
+    data: {
+      imdbid: args.imdbID,
+      name: args.name,
+      year: args.year,
+    },
+  };
+
+  movieTogetherAPI.callGetMovieInfo(body).then((movieInfo) => {
+    const movieEmbed = utils.generateMovieEmbed(movieInfo);
+    message.channel.send(movieEmbed);
+    console.log(movieInfo);
+  }).catch((error) => {
+    message.channel.send(`Failed to get movie: \`${error.error.errorMessage}\``);
+  });
 }
 
 /**
@@ -76,7 +83,22 @@ function getMovieInfo(args, message) {
  * @param {Object} message
  */
 function removeMovie(args, message) {
-  console.log('Entering removeMovie function');
+  console.log('Entered removeMovie command');
+  const body = {
+    discord_id: message.author.id,
+    data: {
+      imdbid: args.imdbID,
+      name: args.name,
+      year: args.year,
+    },
+  };
+
+  movieTogetherAPI.callDeleteMovie(body).then(() => {
+    message.channel.send('Removed the movie');
+  }).catch((err) => {
+    console.log(err);
+    message.channel.send(`Failed to remove the movie: \`${err.error.errorMessage}\``);
+  });
 }
 
 /**

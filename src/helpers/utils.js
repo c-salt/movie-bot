@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+const Discord = require('discord.js');
 const movieTogetherAPI = require('../helpers/movieTogetherAPI');
 
 const methods = {};
@@ -47,6 +48,26 @@ methods.convertFlagArgumentString = (commandIn) => {
   const name = commandIn.substring(flag.length + flagIndex + 1, nextDash - 1);
   console.log('name ', name);
   return commandIn.replace(name, name.replace(new RegExp(' ', 'g'), '~'));
+};
+
+/**
+ * Generates the embedded Discord message object for movie info display
+ * @param {Object} movieInfo
+ * @returns {Discord.RichEmbed}
+ */
+methods.generateMovieEmbed = (movieInfo) => {
+  const movieEmbed = new Discord.RichEmbed()
+    .setColor('#ff665e')
+    .setTitle(movieInfo.title)
+    .setDescription(movieInfo.released)
+    .setAuthor('Movie Information', 'https://avatars3.githubusercontent.com/u/50064876?s=200&v=4', 'https://github.com/c-salt/movie-bot')
+    .setThumbnail(movieInfo.poster_url)
+    .addField('Plot', `*${movieInfo.plot}*`)
+    .addField('Status', movieInfo.future_movie ? 'Not Watched' : 'Watched')
+    .addField('IMDB Rating', movieInfo.imdb_rating, true)
+    .addField('Rotton Tomatoes Rating', movieInfo.rotten_tomatoes_rating, true)
+    .addField('Metascore Rating', movieInfo.metascore_rating, true);
+  return movieEmbed;
 };
 
 module.exports = methods;
