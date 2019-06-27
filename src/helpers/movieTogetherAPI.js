@@ -25,18 +25,25 @@ function callAPI(method, endpoint, body) {
 }
 
 /**
- * Calls the GET /movie endpoint
- * @param {Object} body
- * @returns {Promise}
- */
-methods.callGetMovieInfo = (body => callAPI('GET', '/movie', body));
-
-/**
  * Calls the PATCH /user endpoint
  * @param {Object} body
  * @returns {Promise}
  */
 methods.callUpdateUser = (body => callAPI('PATCH', '/user', body));
+
+/**
+ * Calls the GET /user/connected endpoint
+ * @param {Object} body
+ * @returns {Promise}
+ */
+methods.callVerifyConnected = (body => callAPI('GET', '/user/connected', body));
+
+/**
+ * Calls the GET /movie endpoint
+ * @param {Object} body
+ * @returns {Promise}
+ */
+methods.callGetMovieInfo = (body => callAPI('GET', '/movie', body));
 
 /**
  * Calls the POST /movie endpoint
@@ -53,10 +60,11 @@ methods.callAddMovie = (body => callAPI('POST', '/movie', body));
 methods.callDeleteMovie = (body => callAPI('DELETE', '/movie', body));
 
 /**
- * Calls the GET /user/connected endpoint
+ * Calls the PATCH /movie endpoint
  * @param {Object} body
- * @returns {Promise}
+ * @returns {Priomise}
  */
-methods.callVerifyConnected = (body => callAPI('GET', '/user/connected', body));
+methods.callUpdateMovie = (body => callAPI('PATCH', '/movie', body));
+
 
 module.exports = methods;
