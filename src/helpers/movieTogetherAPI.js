@@ -62,7 +62,7 @@ methods.callDeleteMovie = (body => callAPI('DELETE', '/movie', body));
 /**
  * Calls the PATCH /movie endpoint
  * @param {Object} body
- * @returns {Priomise}
+ * @returns {Promise}
  */
 methods.callUpdateMovie = (body => callAPI('PATCH', '/movie', body));
 
