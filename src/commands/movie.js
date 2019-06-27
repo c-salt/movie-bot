@@ -34,10 +34,11 @@ function commandsValid(args) {
  * @param {Object} message
  */
 function addMovie(args, message) {
+  const future = (args.future) ? 1 : 0;
   const body = {
     discord_id: message.author.id,
     data: {
-      future: args.future,
+      future,
       imdbid: args.imdbID,
       name: args.name,
       year: args.year,
@@ -58,7 +59,6 @@ function addMovie(args, message) {
  * @param {Object} message
  */
 function getMovieInfo(args, message) {
-  console.log('Entering getMovieInfo function');
   const body = {
     discord_id: message.author.id,
     data: {
@@ -71,7 +71,6 @@ function getMovieInfo(args, message) {
   movieTogetherAPI.callGetMovieInfo(body).then((movieInfo) => {
     const movieEmbed = utils.generateMovieEmbed(movieInfo);
     message.channel.send(movieEmbed);
-    console.log(movieInfo);
   }).catch((error) => {
     message.channel.send(`Failed to get movie: \`${error.error.errorMessage}\``);
   });
@@ -83,7 +82,6 @@ function getMovieInfo(args, message) {
  * @param {Object} message
  */
 function removeMovie(args, message) {
-  console.log('Entered removeMovie command');
   const body = {
     discord_id: message.author.id,
     data: {
@@ -96,7 +94,6 @@ function removeMovie(args, message) {
   movieTogetherAPI.callDeleteMovie(body).then(() => {
     message.channel.send('Removed the movie');
   }).catch((err) => {
-    console.log(err);
     message.channel.send(`Failed to remove the movie: \`${err.error.errorMessage}\``);
   });
 }
@@ -108,8 +105,23 @@ function removeMovie(args, message) {
  */
 function watchedMovie(args, message) {
   console.log('Entering watchedMovie function');
-}
 
+  const body = {
+    discord_id: message.author.id,
+    data: {
+      imdbid: args.imdbID,
+      name: args.name,
+      year: args.year,
+    },
+  };
+
+  movieTogetherAPI.callUpdateMovie(body).then(() => {
+    message.channel.send('Movie has been moved to the Super List\nTo rate the movie use `!rating`');
+  }).catch((err) => {
+    console.log(err);
+    message.channel.send(`Failed to move the movie to the super list: \`${err.error.errorMessage}\``);
+  });
+}
 
 /**
  * Main entry point for !movie command processing
