@@ -34,13 +34,7 @@ function commandsValid(args) {
  * @param {Object} message
  */
 function addMovie(args, message) {
-  let future;
-  if (args.future) {
-    future = 1;
-  } else {
-    future = 0;
-  }
-const future = (args.future) ? 1 : 0;
+  const future = (args.future) ? 1 : 0;
   const body = {
     discord_id: message.author.id,
     data: {
