@@ -40,7 +40,7 @@ function addMovie(args, message) {
   } else {
     future = 0;
   }
-
+const future = (args.future) ? 1 : 0;
   const body = {
     discord_id: message.author.id,
     data: {
