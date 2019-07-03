@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 const Discord = require('discord.js');
+const logger = require('log4js').getLogger('bot');
 const movieTogetherAPI = require('../helpers/movieTogetherAPI');
 
 const methods = {};
@@ -10,12 +11,13 @@ const methods = {};
  * @returns {Boolean}
  */
 methods.verifyConnected = async (message) => {
-  console.log(`Verifying that ${message.author.id} is connected to MovieTogether.`);
+  logger.trace('Entering verifyConnected function in src/helpers/utils.js');
+  logger.info(`Verifying that ${message.author.id} is connected to MovieTogether.`);
   const body = {
     discord_id: message.author.id,
   };
   return movieTogetherAPI.callVerifyConnected(body).catch((error) => {
-    console.log(error.error);
+    logger.error(`Encountered an error: ${error.error}`);
     message.channel.send('You need to connect your account!\nPM me `!connect {userid}`');
     return false;
   });
@@ -27,7 +29,8 @@ methods.verifyConnected = async (message) => {
  * @returns {String}
  */
 methods.convertFlagArgumentString = (commandIn) => {
-  console.log(`Converting incoming command = ${commandIn}`);
+  logger.trace('Entering convertFlagArgumentString function in src/helpers/utils.js');
+  logger.debug(`Converting incoming command = ${commandIn}`);
 
   let flag = '';
   if (commandIn.includes('--name')) {
@@ -44,9 +47,9 @@ methods.convertFlagArgumentString = (commandIn) => {
   if (nextDash === -1) {
     nextDash = commandIn.length;
   }
-  console.log('flagIndex ', flagIndex, 'nextDash ', nextDash);
+  logger.debug('flagIndex ', flagIndex, 'nextDash ', nextDash);
   const name = commandIn.substring(flag.length + flagIndex + 1, nextDash - 1);
-  console.log('name ', name);
+  logger.debug('name ', name);
   return commandIn.replace(name, name.replace(new RegExp(' ', 'g'), '~'));
 };
 
@@ -56,6 +59,7 @@ methods.convertFlagArgumentString = (commandIn) => {
  * @returns {Discord.RichEmbed}
  */
 methods.generateMovieEmbed = (movieInfo) => {
+  logger.trace('Entering generateMovieEmbed function in src/helpers/utils.js');
   const movieEmbed = new Discord.RichEmbed()
     .setColor('#ff665e')
     .setTitle(movieInfo.title)
@@ -67,6 +71,7 @@ methods.generateMovieEmbed = (movieInfo) => {
     .addField('IMDB Rating', movieInfo.imdb_rating, true)
     .addField('Rotton Tomatoes Rating', movieInfo.rotten_tomatoes_rating, true)
     .addField('Metascore Rating', movieInfo.metascore_rating, true);
+  logger.debug(`Generated embed element: ${JSON.stringify(movieEmbed)}`);
   return movieEmbed;
 };
 

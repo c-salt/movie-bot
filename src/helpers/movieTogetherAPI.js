@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 const rp = require('request-promise');
+const logger = require('log4js').getLogger('bot');
 
 const methods = {};
 
@@ -11,6 +12,8 @@ const methods = {};
  * @returns {Promise}
  */
 function callAPI(method, endpoint, body) {
+  logger.trace('Entered callAPI function in src/helper/movieTegetherAPI.js');
+
   const options = {
     method,
     uri: `http://localhost:4000${endpoint}`,
@@ -20,7 +23,7 @@ function callAPI(method, endpoint, body) {
     json: true,
     body,
   };
-
+  logger.info(`Calling server endpoint ${options.uri} with http-method ${options.method} and body ${JSON.stringify(options.body)}`);
   return rp(options);
 }
 
