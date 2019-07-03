@@ -19,8 +19,6 @@ const utils = require('../helpers/utils');
  * @modified  Jun 27, 2019
  */
 
-
-
 const methods = {};
 
 /**
@@ -32,22 +30,22 @@ function commandsValid(args) {
   logger.trace('Entering commandsValid in src/commands/movie.js');
 
   if (Object.keys(args).filter(arg => ['add', 'info', 'remove', 'watched'].includes(arg)).length !== 1) {
-    logger.warn('Command determined invalid: Must have one and only one of add, remove, info, or watched in command');
+    logger.debug('Command determined invalid: Must have one and only one of add, remove, info, or watched in command');
     throw new Error('Must have only one of: **[**`-a/--add` **|** `-o/--info` **|** `-r/--remove` **|** `-w/--watched`**]**');
   }
 
   if ('future' in args && Object.keys(args).filter(arg => ['info', 'remove', 'watched'].includes(arg)).length >= 1) {
-    logger.warn('Command determined invalid: Future can only be used with add, not other main command flags');
+    logger.debug('Command determined invalid: Future can only be used with add, not other main command flags');
     throw new Error('`-f/--future` can only be used with `-a/--add`');
   }
 
   if ((args.name && !args.year) || (!args.name && args.year)) {
-    logger.warn('Command determined invalid: Name and Year must be together');
+    logger.debug('Command determined invalid: Name and Year must be together');
     throw new Error('`-n/--name` and `-y/--year` must be used together');
   }
 
   if (Object.keys(args).filter(arg => args[arg] instanceof Object).length !== 0) {
-    logger.warn('Command determined invalid: Cannot have the same flag more than one time');
+    logger.debug('Command determined invalid: Cannot have the same flag more than one time');
     throw new Error('Cannot specify the same flag multiple times');
   }
 }
